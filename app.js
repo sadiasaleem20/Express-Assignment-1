@@ -3,11 +3,19 @@ const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require("dotenv").config();
 
-mongoose.connect("mongodb://localhost/mydatabase", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/express";
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
+  });
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -24,6 +32,6 @@ app.use("/api/products", productRoute);
 app.use("/api/sales", saleRoute);
 app.use("/api/productSales", productSaleRoute);
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
